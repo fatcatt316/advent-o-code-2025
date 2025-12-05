@@ -1,6 +1,5 @@
 defmodule SafeCracker do
 
-  # @numbers Enum.to_list(0..99)
   @max_number 100
   @initial_number 50
   @initial_password 0
@@ -10,20 +9,23 @@ defmodule SafeCracker do
     |> Stream.map(&String.trim/1)
     |> Enum.to_list()
     |> Enum.reduce({@initial_password, @initial_password, @initial_number}, fn line, {current_part1_password, current_part2_password, current_number} ->
-      number_of_clicks = String.slice(line, 1, 3) |> String.to_integer()
-      direction = String.at(line, 0)
-
-      # passes in R or L, then the number of clicks, along with current index
-      new_number = twist_dial(direction, number_of_clicks, current_number)
-      current_part2_password = passed_zero_count(direction, number_of_clicks, current_number) + current_part2_password
-
-      case new_number do
-        0 -> {current_part1_password + 1, current_part2_password + 1, new_number}
-        _ -> {current_part1_password, current_part2_password, new_number}
-      end
+      process_line(line, current_part1_password, current_part2_password, current_number)
     end)
 
-    IO.puts("Part 1 Password: #{part1_password} | Part 2 Password: #{part2_password}")
+    IO.puts("Part 1 Password: #{part1_password}\nPart 2 Password: #{part2_password}")
+  end
+
+  defp process_line(line, current_part1_password, current_part2_password, current_number) do
+    direction = String.at(line, 0)
+    number_of_clicks = String.slice(line, 1, 3) |> String.to_integer()
+
+    new_number = twist_dial(direction, number_of_clicks, current_number)
+    current_part2_password = passed_zero_count(direction, number_of_clicks, current_number) + current_part2_password
+
+    case new_number do
+      0 -> {current_part1_password + 1, current_part2_password + 1, new_number}
+      _ -> {current_part1_password, current_part2_password, new_number}
+    end
   end
 
   # returns the new number after moving the number of clicks
