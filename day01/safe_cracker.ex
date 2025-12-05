@@ -38,7 +38,7 @@ defmodule SafeCracker do
     |> Integer.mod(@max_number)
   end
 
-  # checks if zero was passed while rotating the dial
+  # counts how many times zero was passed while rotating the dial
   def passed_zero_count(direction, number_of_clicks, current_number) do
     full_rotation_count = div(number_of_clicks, @max_number)
 
